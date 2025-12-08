@@ -2,59 +2,85 @@
 import { ref, onMounted } from "vue";
 
 const pizze = ref([]);
+const odabrana_pizza = ref(null);
+const velicina_pizza = ref(null);
 
 onMounted(async () => {
-  const response = await fetch("http://localhost:3000/pizze");
-  pizze.value = await response.json();
-  console.log(pizze.value);
+  try {
+    const response = await fetch("http://localhost:3000/pizze");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    pizze.value = data;
+    console.log("Podaci o pizzama:", pizze.value);
+  } catch (error) {
+    console.error("Greška pri dohvaćanju podataka o pizzama:", error);
+  }
 });
 
+function odaberiPizzu(pizza_naziv, pizza_velicina) {
+  odabrana_pizza.value = pizza_naziv;
+  velicina_pizza.value = pizza_velicina;
+  console.log(
+    "Odabrana pizza:",
+    odabrana_pizza.value,
+    "Velicina pizze:",
+    velicina_pizza.value
+  );
+}
 </script>
 
 <template>
-  
-
-    <div v-for="pizza in pizze" :key="pizza.id">
-        <div class="bg-inherit rounded-xl overflow-hidden">
-            <div class="w-full h-48 flex items-center justify-center bg-white">
-            <!-- Slika s interneta -->
-                <img src="https://www.freeiconspng.com/uploads/pizza-png-1.png" alt="Pizza Image1" class="w-full h-full object-contain" />
-            </div>
-            <div class="p-6">
-                <div class="flex items-center space-x-3 mb-4">
-                <!-- Naziv -->
-                    <h2 class="text-lg font-bold text-orange-500 tracking-wide">{{ pizza.naziv }}</h2>
-                <!-- Sastojci -->
-                    <div class="flex space-x-2">
-                        <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-
-                        center text-slate-50 font-semibold text-xs">Icon</div>
-
-                        <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-
-                        center text-slate-50 font-semibold text-xs">Icon</div>
-
-                        <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-
-                        center text-slate-50 font-semibold text-xs">Icon</div>
+  <body>
+    <div class="mx-auto bg-linear-to-br min-h-screen p-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Pizza 1 -->
+             
+            <div v-for="pizza in pizze" :key="pizza.id" class="bg-inherit rounded-xl overflow-hidden">
+                <div :class="['bg-inherit rounded-xl overflow-hidden cursor-pointer transition-all duration-300',odabrana_pizza === pizza.naziv? 'ring-4 ring-orange-300 shadow-lg shadow-orange-300/50 scale-[1.02]': 'hover:scale-[1.01]' ,]">
+                    <div class="w-full h-48 flex items-center justify-center bg-inherit">
+                        <img src="https://www.freeiconspng.com/uploads/pizza-png-1.png" alt="Pizza Image 1" class="w-full h-full object-contain" />
                     </div>
-                </div>
-            <!-- Cijene za svaku veličinu -->
-                <div class="space-y-2">
-                    <div class="flex justify-between text-gray-700">
-                        <span class="font-medium">Mala</span>
-                        <span>€ + {{ pizza.cijene?.mala }}</span>
-                    </div>
-                    <div class="flex justify-between text-gray-700">
-                        <span class="font-medium">Srednja</span>
-                        <span>€ + {{ pizza.cijene?.srednja }}</span>
-                    </div>
-                    <div class="flex justify-between text-gray-700">
-                        <span class="font-medium">Jumbo</span>
-                        <span>€ + {{ pizza.cijene?.jumbo }}</span>
+
+                    <div class="p-6">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <h2 class="text-lg font-bold text-orange-500 tracking-wide">{{ pizza.naziv }}</h2>
+
+                            <div class="flex space-x-2">
+                                <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-slate-50 font-semibold text-xs">Icon</div>
+                                <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-slate-50 font-semibold text-xs">Icon</div>
+                                <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-slate-50 font-semibold text-xs">Icon</div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            
+                            <div class="flex justify-between text-gray-700">
+                                <span class="font-medium">Mala</span>
+                                <span>€{{ pizza.cijene?.mala }}</span>
+                                <button @click="odaberiPizzu(pizza.naziv,'mala')">Dodaj pizzu</button>
+                            </div>
+
+                            <div class="flex justify-between text-gray-700">
+                                <span class="font-medium">Srednja</span>
+                                <span>€{{ pizza.cijene?.srednja }}</span>
+                                <button @click="odaberiPizzu(pizza.naziv,'srednja')">Dodaj pizzu</button>
+                            </div>
+
+                            <div class="flex justify-between text-gray-700">
+                                <span class="font-medium">Jumbo</span>
+                                <span>€{{ pizza.cijene?.jumbo }}</span>
+                                <button @click="odaberiPizzu(pizza.naziv,'jumbo')">Dodaj pizzu</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+</body>
 </template>
 
 

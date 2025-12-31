@@ -4,7 +4,7 @@ import { ref, onMounted } from "vue";
 const pizze = ref([]);
 const odabrana_pizza = ref(null);
 const velicina_pizza = ref(null);
-
+const selectedNumber = ref(null);
 onMounted(async () => {
   try {
     const response = await fetch("http://localhost:3000/pizze");
@@ -39,46 +39,34 @@ function odaberiPizzu(pizza_naziv, pizza_velicina) {
             <!-- Pizza 1 -->
              
             <div v-for="pizza in pizze" :key="pizza.id" class="bg-inherit rounded-xl overflow-hidden">
-                <div :class="['bg-inherit rounded-xl overflow-hidden cursor-pointer transition-all duration-300',odabrana_pizza === pizza.naziv? 'ring-4 ring-orange-300 shadow-lg shadow-orange-300/50 scale-[1.02]': 'hover:scale-[1.01]' ,]">
+                <div :class="['bg-inherit rounded-xl overflow-hidden cursor-pointer transition-all duration-300',odabrana_pizza === pizza.naziv? 'border-5 border-orange-600 shadow-lg shadow-orange-300/50 scale-[1.10]': 'hover:scale-[1.06]' ,]">
                     <div class="w-full h-48 flex items-center justify-center bg-inherit">
                         <img src="https://www.freeiconspng.com/uploads/pizza-png-1.png" alt="Pizza Image 1" class="w-full h-full object-contain" />
                     </div>
 
-                    <div class="p-6">
-                        <div class="flex items-center space-x-3 mb-4">
-                            <h2 class="text-lg font-bold text-orange-500 tracking-wide">{{ pizza.naziv }}</h2>
+                      <div class="p-6">
+                          <div class="flex items-center space-x-3 mb-4">
+                              <h2 class="text-lg font-bold text-orange-500 tracking-wide">{{ pizza.naziv }}</h2>
 
-                            <div class="flex space-x-2">
-                                <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-slate-50 font-semibold text-xs">Icon</div>
-                                <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-slate-50 font-semibold text-xs">Icon</div>
-                                <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-slate-50 font-semibold text-xs">Icon</div>
+                              <div class="flex space-x-2">
+                                  <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-slate-50 font-semibold text-xs">Icon</div>
+                                  <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-slate-50 font-semibold text-xs">Icon</div>
+                                  <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-slate-50 font-semibold text-xs">Icon</div>
+                              </div>
+                          </div>
+                          <div class="space-y-2">
+                            <div v-for="vel in ['mala','srednja','jumbo']" :key="vel" class="flex justify-between text-gray-700 space-y-2">
+                              <span class="font-medium">{{ vel.charAt(0).toUpperCase() + vel.slice(1) }}</span>
+                              <span>€{{ pizza.cijene[vel] }}</span>
+                              
+                              <button @click="odaberiPizzu(pizza.naziv, vel)">Dodaj pizzu</button>
                             </div>
-                        </div>
-
-                        <div class="space-y-2">
-                            
-                            <div class="flex justify-between text-gray-700">
-                                <span class="font-medium">Mala</span>
-                                <span>€{{ pizza.cijene?.mala }}</span>
-                                <button @click="odaberiPizzu(pizza.naziv,'mala')">Dodaj pizzu</button>
-                            </div>
-
-                            <div class="flex justify-between text-gray-700">
-                                <span class="font-medium">Srednja</span>
-                                <span>€{{ pizza.cijene?.srednja }}</span>
-                                <button @click="odaberiPizzu(pizza.naziv,'srednja')">Dodaj pizzu</button>
-                            </div>
-
-                            <div class="flex justify-between text-gray-700">
-                                <span class="font-medium">Jumbo</span>
-                                <span>€{{ pizza.cijene?.jumbo }}</span>
-                                <button @click="odaberiPizzu(pizza.naziv,'jumbo')">Dodaj pizzu</button>
-                            </div>
+                          </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+
     </div>
 </body>
 </template>

@@ -11,7 +11,6 @@ router.get('/', (req, res) => {
         };
     res.status(200).json(pizze);
 });
-// GET /pizze/:naziv - Dohvaćanje pizze prema nazivu (npr. GET /pizze/Margherita)
 
 router.get('/:naziv', (req, res) => {
     const naziv = req.params.naziv;
